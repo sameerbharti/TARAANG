@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TARAANG</title>
+    <link type="image/png" sizes="16x16" rel="icon" href=".../icons8-solar panel-cotton-16.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo">
+            <div class="logo-icon"><i class="fas fa-solar-panel"></i></div>
+            <div>
+                <h1>TARAANG</h1>
+                <p>Microgrid Monitoring System</p>
+            </div>
+        </div>
+        
+        <ul class="nav-links">
+            <li><a href="#" class="active" data-section="dashboard"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+            <li><a href="#" data-section="generation"><i class="fas fa-solar-panel"></i> <span>Generation</span></a></li>
+            <li><a href="#" data-section="battery"><i class="fas fa-battery-full"></i> <span>Battery</span></a></li>
+            <li><a href="#" data-section="consumption"><i class="fas fa-plug"></i> <span>Consumption</span></a></li>
+            <li><a href="#" data-section="analytics"><i class="fas fa-chart-line"></i> <span>Analytics</span></a></li>
+            <li><a href="#" data-section="settings"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+            <li><a href="#" data-section="help"><i class="fas fa-question-circle"></i> <span>Help</span></a></li>
+        </ul>
+        
+        <div class="system-status">
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <div class="status-text">System Normal</div>
+            </div>
+            <div class="status-details">
+                <div>Uptime: 12 days</div>
+                <div>Version: 2.3.1</div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div class="date-display">Wednesday, October 25, 2023 | 12:30 PM</div>
+            <div class="user-menu">
+                <div class="notification-bell" id="notificationBell">
+                    <i class="fas fa-bell"></i>
+                    <div class="notification-badge">3</div>
+                </div>
+                <div class="user-profile">
+                    <div class="user-avatar">SB</div>
+                    <div class="user-name">Sameer</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Dashboard Section -->
+        <div class="dashboard-section active" id="dashboard-section">
+            <div class="dashboard">
+                <!-- Column 1: Generation -->
+                <div class="column">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Now</div>
+                            <i class="fas fa-sun" style="color: #f59e0b;"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="metric">
+                                <div class="metric-label">PV Power</div>
+                                <div class="metric-value">3.8 <span class="metric-unit">kW</span></div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Irradiance</div>
+                                <div class="metric-value">780 <span class="metric-unit">W/m²</span></div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Panel Temp</div>
+                                <div class="metric-value">42 <span class="metric-unit">°C</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Forecast (next 6-24h)</div>
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="card-content">
+                            <canvas id="pvForecastChart" height="200"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Efficiency / Loss</div>
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="gauge-container">
+                                <canvas id="efficiencyGauge" width="200" height="120"></canvas>
+                                <div class="gauge-value">78%</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Status</div>
+                                <div class="metric-value" style="font-size: 16px;">Loss 22% (clear sky) → clean panels likely</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert-mini warning">
+                        <span class="alert-icon"><i class="fas fa-exclamation-triangle"></i></span>
+                        <span>Overheat risk (Tcell 59 °C)</span>
+                    </div>
+                    
+                    <div class="alert-mini info">
+                        <span class="alert-icon"><i class="fas fa-info-circle"></i></span>
+                        <span>Rain tomorrow → recheck soiling after rain</span>
+                    </div>
+                </div>
+                
+                <!-- Column 2: Battery -->
+                <div class="column">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Now</div>
+                            <i class="fas fa-battery-three-quarters"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="metric">
+                                <div class="metric-label">SOC</div>
+                                <div class="metric-value">64 <span class="metric-unit">%</span></div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Voltage</div>
+                                <div class="metric-value">48.2 <span class="metric-unit">V</span></div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Current</div>
+                                <div class="metric-value">12.5 <span class="metric-unit">A</span></div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Power</div>
+                                <div class="metric-value">+0.6 <span class="metric-unit">kW</span></div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Charge/Discharge Limit</div>
+                                <div class="metric-value">2.5 <span class="metric-unit">kW</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Health (from your ML)</div>
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="metric">
+                                <div class="metric-label">SOH</div>
+                                <div class="metric-value">82 <span class="metric-unit">%</span></div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Cycle Count</div>
+                                <div class="metric-value">1,248</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Capacity Trend</div>
+                                <div class="metric-value">→ Stable</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Planning</div>
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="metric">
+                                <div class="metric-label">Target SOC Tonight</div>
+                                <div class="metric-value">80 <span class="metric-unit">%</span></div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Reason</div>
+                                <div class="metric-value" style="font-size: 16px;">Cloudy morning expected</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Temperature Note</div>
+                                <div class="metric-value" style="font-size: 16px;">Heat 41 °C → limit fast charge</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert-mini warning">
+                        <span class="alert-icon"><i class="fas fa-exclamation-triangle"></i></span>
+                        <span>SOH < 70% → plan maintenance</span>
+                    </div>
+                    
+                    <div class="alert-mini danger pulse">
+                        <span class="alert-icon"><i class="fas fa-exclamation-circle"></i></span>
+                        <span>SOC < min (30%) → protect reserve</span>
+                    </div>
+                </div>
+                
+                <!-- Column 3: Consumption -->
+                <div class="column">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Now</div>
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="metric">
+                                <div class="metric-label">Total Load</div>
+                                <div class="metric-value">1.2 <span class="metric-unit">kW</span></div>
+                            </div>
+                            
+                            <div class="tier-list">
+                                <div class="tier-item">
+                                    <span class="tier-badge tier-1">Tier-1</span>
+                                    <span>Clinic lights (120 W)</span>
+                                </div>
+                                <div class="tier-item">
+                                    <span class="tier-badge tier-2">Tier-2</span>
+                                    <span>Pump (250 W)</span>
+                                </div>
+                                <div class="tier-item">
+                                    <span class="tier-badge tier-3">Tier-3</span>
+                                    <span>EV charger (OFF)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Policy / Mode</div>
+                            <i class="fas fa-sliders-h"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="mode-badge mode-save">SAVE</div>
+                            <div class="metric">
+                                <div class="metric-label">Active Rule</div>
+                                <div class="metric-value" style="font-size: 16px;">SOC 34% + low PV next 3h → shed Tier-3</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Short-term Demand</div>
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div class="card-content">
+                            <canvas id="demandChart" height="200"></canvas>
+                            <div class="metric">
+                                <div class="metric-label">Note</div>
+                                <div class="metric-value" style="font-size: 16px;">Peak at 14:00 → clinic AC on</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Actions Log</div>
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <div class="card-content actions-log">
+                            <div class="log-entry">
+                                <div class="log-time">12:15</div>
+                                <div class="log-content">Shed Tier-3 load (EV charger)</div>
+                            </div>
+                            <div class="log-entry">
+                                <div class="log-time">11:30</div>
+                                <div class="log-content">Reduced charge rate (heat)</div>
+                            </div>
+                            <div class="log-entry">
+                                <div class="log-time">10:45</div>
+                                <div class="log-content">Started grid charge (clouds)</div>
+                            </div>
+                            <div class="log-entry">
+                                <div class="log-time">09:20</div>
+                                <div class="log-content">Increased PV output (cleaning)</div>
+                            </div>
+                            <div class="log-entry">
+                                <div class="log-time">08:05</div>
+                                <div class="log-content">System check completed</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Generation Section -->
+        <div class="dashboard-section" id="generation-section">
+            <h2 style="margin-bottom: 20px;">Generation Details</h2>
+            <div class="dashboard">
+                <div class="column">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Real-time Generation</div>
+                            <i class="fas fa-sun" style="color: #f59e0b;"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="metric">
+                                <div class="metric-label">PV Power</div>
+                                <div class="metric-value">3.8 <span class="metric-unit">kW</span></div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Irradiance</div>
+                                <div class="metric-value">780 <span class="metric-unit">W/m²</span></div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Panel Temp</div>
+                                <div class="metric-value">42 <span class="metric-unit">°C</span></div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Daily Production</div>
+                                <div class="metric-value">18.2 <span class="metric-unit">kWh</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Array Configuration</div>
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="metric">
+                                <div class="metric-label">Strings</div>
+                                <div class="metric-value">4</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Modules per String</div>
+                                <div class="metric-value">12</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Total Capacity</div>
+                                <div class="metric-value">5.2 <span class="metric-unit">kWp</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="column">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Forecast</div>
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="card-content">
+                            <canvas id="generationForecastChart" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="column">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Performance Ratio</div>
+                            <i class="fas fa-tachometer-alt"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="gauge-container">
+                                <canvas id="performanceGauge" width="200" height="120"></canvas>
+                                <div class="gauge-value">86%</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Expected</div>
+                                <div class="metric-value">21.4 <span class="metric-unit">kWh</span></div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Actual</div>
+                                <div class="metric-value">18.2 <span class="metric-unit">kWh</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Maintenance</div>
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="metric">
+                                <div class="metric-label">Last Cleaning</div>
+                                <div class="metric-value">12 days ago</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Next Inspection</div>
+                                <div class="metric-value">In 18 days</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Inverter Status</div>
+                                <div class="metric-value">Normal</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Battery Section -->
+        <div class="dashboard-section" id="battery-section">
+            <h2 style="margin-bottom: 20px;">Battery Management</h2>
+            <div class="dashboard">
+                <div class="column">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Current Status</div>
+                            <i class="fas fa-battery-three-quarters"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="metric">
+                                <div class="metric-label">State of Charge</div>
+                                <div class="metric-value">64 <span class="metric-unit">%</span></div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Voltage</div>
+                                <div class="metric-value">48.2 <span class="metric-unit">V</span></div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Current</div>
+                                <div class="metric-value">12.5 <span class="metric-unit">A</span></div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Power</div>
+                                <div class="metric-value">+0.6 <span class="metric-unit">kW</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Battery Health</div>
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="metric">
+                                <div class="metric-label">State of Health</div>
+                                <div class="metric-value">82 <span class="metric-unit">%</span></div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Cycle Count</div>
+                                <div class="metric-value">1,248</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Temperature</div>
+                                <div class="metric-value">32 <span class="metric-unit">°C</span></div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Capacity Trend</div>
+                                <div class="metric-value">→ Stable</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="column">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Charge/Discharge History</div>
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <div class="card-content">
+                            <canvas id="batteryHistoryChart" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="column">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Settings & Configuration</div>
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="metric">
+                                <div class="metric-label">Charge Limit</div>
+                                <div class="metric-value">2.5 <span class="metric-unit">kW</span></div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Discharge Limit</div>
+                                <div class="metric-value">3.0 <span class="metric-unit">kW</span></div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Min SOC</div>
+                                <div class="metric-value">20 <span class="metric-unit">%</span></div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Max SOC</div>
+                                <div class="metric-value">95 <span class="metric-unit">%</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Maintenance</div>
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="metric">
+                                <div class="metric-label">Last Equalization</div>
+                                <div class="metric-value">45 days ago</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Next Check</div>
+                                <div class="metric-value">In 15 days</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Warranty</div>
+                                <div class="metric-value">Until Jun 2027</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Consumption Section -->
+        <div class="dashboard-section" id="consumption-section">
+            <h2 style="margin-bottom: 20px;">Energy Consumption</h2>
+            <div class="dashboard">
+                <div class="column">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Current Consumption</div>
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="metric">
+                                <div class="metric-label">Total Load</div>
+                                <div class="metric-value">1.2 <span class="metric-unit">kW</span></div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">From Solar</div>
+                                <div class="metric-value">0.8 <span class="metric-unit">kW</span></div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">From Battery</div>
+                                <div class="metric-value">0.4 <span class="metric-unit">kW</span></div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">From Grid</div>
+                                <div class="metric-value">0.0 <span class="metric-unit">kW</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Load Distribution</div>
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                        <div class="card-content">
+                            <canvas id="loadDistributionChart" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="column">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Daily Consumption Pattern</div>
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="card-content">
+                            <canvas id="consumptionPatternChart" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="column">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Appliance Usage</div>
+                            <i class="fas fa-plug"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="tier-list">
+                                <div class="tier-item">
+                                    <span class="tier-badge tier-1">Tier-1</span>
+                                    <span>Clinic lights (120 W)</span>
+                                    <span class="metric-value">ON</span>
+                                </div>
+                                <div class="tier-item">
+                                    <span class="tier-badge tier-2">Tier-2</span>
+                                    <span>Pump (250 W)</span>
+                                    <span class="metric-value">ON</span>
+                                </div>
+                                <div class="tier-item">
+                                    <span class="tier-badge tier-3">Tier-3</span>
+                                    <span>EV charger (2.5 kW)</span>
+                                    <span class="metric-value">OFF</span>
+                                </div>
+                                <div class="tier-item">
+                                    <span class="tier-badge tier-2">Tier-2</span>
+                                    <span>Refrigerator (180 W)</span>
+                                    <span class="metric-value">ON</span>
+                                </div>
+                                <div class="tier-item">
+                                    <span class="tier-badge tier-1">Tier-1</span>
+                                    <span>Router (15 W)</span>
+                                    <span class="metric-value">ON</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="card-title">Energy Savings</div>
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="metric">
+                                <div class="metric-label">Today's Savings</div>
+                                <div class="metric-value">$2.85</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">Monthly Savings</div>
+                                <div class="metric-value">$78.40</div>
+                            </div>
+                            <div class="metric">
+                                <div class="metric-label">CO₂ Avoided</div>
+                                <div class="metric-value">42.5 <span class="metric-unit">kg</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Analytics Section -->
+        <div class="dashboard-section" id="analytics-section">
+            <h2 style="margin-bottom: 20px;">System Analytics</h2>
+            <div class="analytics-grid">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">92.3%</div>
+                        <div class="stat-label">System Availability</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">18.2 kWh</div>
+                        <div class="stat-label">Avg Daily Production</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">86.4%</div>
+                        <div class="stat-label">Performance Ratio</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">$285.70</div>
+                        <div class="stat-label">Monthly Savings</div>
+                    </div>
+                </div>
+                
+                <div class="card analytics-card">
+                    <div class="card-header">
+                        <div class="card-title">Monthly Energy Production</div>
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <div class="card-content">
+                        <canvas id="monthlyProductionChart" height="250"></canvas>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Energy Flow</div>
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <div class="card-content">
+                        <canvas id="energyFlowChart" height="250"></canvas>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">System Efficiency Over Time</div>
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="card-content">
+                        <canvas id="efficiencyTrendChart" height="250"></canvas>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Consumption vs Production</div>
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <div class="card-content">
+                        <canvas id="consumptionVsProductionChart" height="250"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Settings Section -->
+        <div class="dashboard-section" id="settings-section">
+            <h2 style="margin-bottom: 20px;">System Settings</h2>
+            <div class="settings-grid">
+                <div class="settings-menu">
+                    <h3 style="margin-bottom: 15px;">Configuration</h3>
+                    <div class="settings-item active">General</div>
+                    <div class="settings-item">Battery</div>
+                    <div class="settings-item">Load Management</div>
+                    <div class="settings-item">Notifications</div>
+                    <div class="settings-item">Users</div>
+                    <div class="settings-item">System Update</div>
+                </div>
+                
+                <div class="settings-content">
+                    <h3 style="margin-bottom: 20px;">General Settings</h3>
+                    
+                    <div class="form-group">
+                        <label for="systemName">System Name</label>
+                        <input type="text" id="systemName" value="SolarManager Pro">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="timezone">Timezone</label>
+                        <select id="timezone">
+                            <option selected>(UTC+05:30) India Standard Time</option>
+                            <option>(UTC-08:00) Pacific Time</option>
+                            <option>(UTC-05:00) Eastern Time</option>
+                            <option>(UTC+00:00) Greenwich Mean Time</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dateFormat">Date Format</label>
+                        <select id="dateFormat">
+                            <option selected>DD/MM/YYYY</option>
+                            <option>MM/DD/YYYY</option>
+                            <option>YYYY-MM-DD</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="language">Language</label>
+                        <select id="language">
+                            <option selected>English</option>
+                            <option>Spanish</option>
+                            <option>French</option>
+                            <option>German</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dataRetention">Data Retention Period</label>
+                        <select id="dataRetention">
+                            <option>30 days</option>
+                            <option selected>90 days</option>
+                            <option>1 year</option>
+                            <option>Unlimited</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn btn-primary">Save Settings</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Help Section -->
+        <div class="dashboard-section" id="help-section">
+            <h2 style="margin-bottom: 20px;">Help & Support</h2>
+            <div class="help-grid">
+                <div class="help-categories">
+                    <h3 style="margin-bottom: 15px;">Categories</h3>
+                    <div class="help-item active">Getting Started</div>
+                    <div class="help-item">Troubleshooting</div>
+                    <div class="help-item">Maintenance</div>
+                    <div class="help-item">Optimization Tips</div>
+                    <div class="help-item">FAQ</div>
+                    <div class="help-item">Contact Support</div>
+                </div>
+                
+                <div class="help-content">
+                    <h3 style="margin-bottom: 20px;">Getting Started with SolarManager</h3>
+                    <p>Welcome to SolarManager, your comprehensive solar energy management system. This guide will help you get started with monitoring and optimizing your solar power system.</p>
+                    
+                    <h4 style="margin: 20px 0 10px 0;">Dashboard Overview</h4>
+                    <p>The dashboard provides a comprehensive overview of your system's performance, including:</p>
+                    <ul style="margin-left: 20px; margin-bottom: 20px;">
+                        <li>Real-time energy production metrics</li>
+                        <li>Battery status and health information</li>
+                        <li>Energy consumption patterns</li>
+                        <li>System alerts and notifications</li>
+                        <li>Forecasts and planning tools</li>
+                    </ul>
+                    
+                    <h4 style="margin: 20px 0 10px 0;">Navigation</h4>
+                    <p>Use the sidebar to navigate between different sections of the system:</p>
+                    <ul style="margin-left: 20px; margin-bottom: 20px;">
+                        <li><strong>Dashboard</strong>: Main overview of system performance</li>
+                        <li><strong>Generation</strong>: Detailed solar production data</li>
+                        <li><strong>Battery</strong>: Battery status and management tools</li>
+                        <li><strong>Consumption</strong>: Energy usage statistics and patterns</li>
+                        <li><strong>Analytics</strong>: Historical data and performance trends</li>
+                        <li><strong>Settings</strong>: System configuration options</li>
+                    </ul>
+                    
+                    <h4 style="margin: 20px 0 10px 0;">Getting Assistance</h4>
+                    <p>If you need further assistance, please refer to the other help sections or contact our support team at support@solarmanager.com or call +1 (800) 123-4567 between 9 AM and 5 PM EST.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <div class="system-status">
+                System Status: <strong>Normal Operation</strong> | Last Updated: 12:28:43 PM
+            </div>
+            <div class="control-buttons">
+                <button class="btn btn-secondary">
+                    <i class="fas fa-cog"></i> Settings
+                </button>
+                <button class="btn btn-primary" id="exportBtn">
+                    <i class="fas fa-file-export"></i> Export Report
+                </button>
+                <button class="btn btn-primary" id="alertsBtn">
+                    <i class="fas fa-bell"></i> Alerts (3)
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="alert-toggle" id="alertToggle">
+        <i class="fas fa-bell"></i>
+    </div>
+    
+    <div class="alert-drawer" id="alertDrawer">
+        <div class="alert-header">
+            <div class="alert-title">System Alerts</div>
+            <button class="close-drawer" id="closeDrawer">×</button>
+        </div>
+        
+        <div class="alert-item alert-critical">
+            <div class="alert-time">Today, 12:04 PM</div>
+            <div class="alert-desc">Soiling suspected (22% loss)</div>
+            <div class="alert-action">Action: Clean panels or wait for rain</div>
+        </div>
+        
+        <div class="alert-item alert-warning">
+            <div class="alert-time">Today, 11:52 AM</div>
+            <div class="alert-desc">Low SOC (34%)</div>
+            <div class="alert-action">Action: Switch to SAVE mode</div>
+        </div>
+        
+        <div class="alert-item alert-warning">
+            <div class="alert-time">Today, 11:40 AM</div>
+            <div class="alert-desc">Heat risk (41°C)</div>
+            <div class="alert-action">Action: Limit C-rate</div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
